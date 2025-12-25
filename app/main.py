@@ -42,6 +42,8 @@ def update_contact_by_id(id:int, body: dict, db: MySQLConnection = Depends(get_d
     contact[id] = id
     u_contact = Contact_Read.model_validate(contact)
     is_update = update_contact(db, u_contact)
+    if not is_update:
+        print("contact not found")
     return {"updated": is_update}
 
     
@@ -50,6 +52,8 @@ def update_contact_by_id(id:int, body: dict, db: MySQLConnection = Depends(get_d
 @app.delete('/contacts/{id}')
 def delete_contact_by_id(id: int, db: MySQLConnection = Depends(get_db)):
     is_deleted = delete_contact(db, id)
+    if not is_deleted:
+        print("contact not found")
     return {"deleted": is_deleted}
 
 if __name__ == '__main__':
