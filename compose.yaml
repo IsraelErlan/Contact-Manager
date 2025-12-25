@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ${DB_NAME}
+     
+      
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+
+
+  api:
+    build: ./app/
+    env_file:
+      - .env
+
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    ports:
+      - 8000:80
+
+volumes:
+  mysql_data:
+
+
+
+
+
+
